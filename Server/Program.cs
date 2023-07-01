@@ -40,18 +40,6 @@ void HandleMessage(IWebSocketConnection client, string message)
     Console.WriteLine($"Client {client.ConnectionInfo.Id} sent message: {message}");
 }
 
-//try
-//{
-//    while (true)
-//    {
-//        Thread.Sleep(33);
-//    }
-//}
-//catch (Exception)
-//{
-
-//}
-
 Console.ReadLine();
 
 server.Dispose();
