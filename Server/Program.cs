@@ -1,12 +1,13 @@
 ﻿using Fleck;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Server;
 
 Console.WriteLine("Hello, World!");
 
 WebSocketServer server = new("ws://0.0.0.0:5000");
-
 IServiceCollection services = new ServiceCollection();
+ClientsRepository list = new();
 
 server.Start(client =>
 {
@@ -18,6 +19,8 @@ server.Start(client =>
 void HandleOpen(IWebSocketConnection client)
 {
     Console.WriteLine($"Client {client.ConnectionInfo.Id} connected");
+
+    list.Add(client.ConnectionInfo.Id, DateTime.Now);
 
     string message = JsonConvert.SerializeObject(new CreateCharacterMessage()
     {
@@ -33,6 +36,7 @@ void HandleOpen(IWebSocketConnection client)
 void HandleClose(IWebSocketConnection client)
 {
     Console.WriteLine($"Client {client.ConnectionInfo.Id} disconnected");
+    list.Remove(client.ConnectionInfo.Id);
 }
 
 void HandleMessage(IWebSocketConnection client, string message)
@@ -41,5 +45,4 @@ void HandleMessage(IWebSocketConnection client, string message)
 }
 
 Console.ReadLine();
-
 server.Dispose();
