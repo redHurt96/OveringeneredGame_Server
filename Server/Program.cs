@@ -2,12 +2,14 @@
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Server;
+using System.Reflection;
 
 Console.WriteLine("Hello, World!");
 
 WebSocketServer server = new("ws://0.0.0.0:5000");
 IServiceCollection services = new ServiceCollection();
-ClientsRepository list = new();
+ClientsRepository repository = new();
+MoveService moveService = new(repository);
 
 server.Start(client =>
 {
@@ -20,7 +22,7 @@ void HandleOpen(IWebSocketConnection client)
 {
     Console.WriteLine($"Client {client.ConnectionInfo.Id} connected");
 
-    list.Add(client.ConnectionInfo.Id, DateTime.Now);
+    repository.Add(client.ConnectionInfo.Id, DateTime.Now);
 
     string message = JsonConvert.SerializeObject(new CreateCharacterMessage()
     {
@@ -36,11 +38,21 @@ void HandleOpen(IWebSocketConnection client)
 void HandleClose(IWebSocketConnection client)
 {
     Console.WriteLine($"Client {client.ConnectionInfo.Id} disconnected");
-    list.Remove(client.ConnectionInfo.Id);
+    repository.Remove(client.ConnectionInfo.Id);
 }
 
 void HandleMessage(IWebSocketConnection client, string message)
 {
+    string[] splitData = message.Split(';');
+    Assembly messagesAssemble = AppDomain.CurrentDomain
+        .GetAssemblies()
+        .First(x => x.FullName.Contains("OverengeeneredGame.Messages"));
+    Type target = messagesAssemble.GetType(splitData[0]);
+    object fromJson = JsonConvert.DeserializeObject(splitData[1], target);
+
+    UpdateCharacterPositionMessage updateMessage = moveService.Execute((MoveCharacterMessage)fromJson);
+    client.Send(JsonConvert.SerializeObject(updateMessage));
+
     Console.WriteLine($"Client {client.ConnectionInfo.Id} sent message: {message}");
 }
 

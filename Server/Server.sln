@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server.csproj", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "..\Domain\Domain.csproj", "{1900F495-5C6F-4CFA-9FCA-84447ECDD798}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "..\Services\Services.csproj", "{BE888B39-9975-44C0-A9B4-56E91B7CED8A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controllers", "..\Controllers\Controllers.csproj", "{29538E80-F518-4DD1-AD90-CA1D3CCB46EB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "External", "..\External\External.csproj", "{96D250A8-F20B-4246-BAFF-B25009891D5C}"
@@ -27,10 +25,6 @@ Global
 		{1900F495-5C6F-4CFA-9FCA-84447ECDD798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1900F495-5C6F-4CFA-9FCA-84447ECDD798}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1900F495-5C6F-4CFA-9FCA-84447ECDD798}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE888B39-9975-44C0-A9B4-56E91B7CED8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE888B39-9975-44C0-A9B4-56E91B7CED8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE888B39-9975-44C0-A9B4-56E91B7CED8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE888B39-9975-44C0-A9B4-56E91B7CED8A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{29538E80-F518-4DD1-AD90-CA1D3CCB46EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{29538E80-F518-4DD1-AD90-CA1D3CCB46EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29538E80-F518-4DD1-AD90-CA1D3CCB46EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
