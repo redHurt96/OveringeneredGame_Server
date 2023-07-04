@@ -16,8 +16,4 @@
   <ItemGroup>
     <None Remove="Messages\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Messages\Messages.csproj" />
-  </ItemGroup>
 </Project>

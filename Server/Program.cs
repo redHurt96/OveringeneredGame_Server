@@ -1,15 +1,14 @@
-﻿using Fleck;
-using Newtonsoft.Json;
-using Microsoft.Extensions.DependencyInjection;
+﻿using _Project;
+using Fleck;
 using Server;
-using System.Reflection;
+using System.Numerics;
 
 Console.WriteLine("Hello, World!");
 
 WebSocketServer server = new("ws://0.0.0.0:5000");
-IServiceCollection services = new ServiceCollection();
 ClientsRepository repository = new();
 MoveService moveService = new(repository);
+MessagesParser parser = new();
 
 server.Start(client =>
 {
@@ -22,17 +21,14 @@ void HandleOpen(IWebSocketConnection client)
 {
     Console.WriteLine($"Client {client.ConnectionInfo.Id} connected");
 
-    repository.Add(client.ConnectionInfo.Id, DateTime.Now);
+    repository.Add(client.ConnectionInfo.Id);
 
-    string message = JsonConvert.SerializeObject(new CreateCharacterMessage()
+    CreateCharacterMessage message = new()
     {
-        X = 0,
-        Y = 0,
-        Z = 0
-    });
+        Position = Vector3.Zero,
+    };
 
-    message = $"{typeof(CreateCharacterMessage)};{message}";
-    client.Send(message);
+    client.Send(parser.Serialize(message));
 }
 
 void HandleClose(IWebSocketConnection client)
@@ -43,15 +39,13 @@ void HandleClose(IWebSocketConnection client)
 
 void HandleMessage(IWebSocketConnection client, string message)
 {
-    string[] splitData = message.Split(';');
-    Assembly messagesAssemble = AppDomain.CurrentDomain
-        .GetAssemblies()
-        .First(x => x.FullName.Contains("OverengeeneredGame.Messages"));
-    Type target = messagesAssemble.GetType(splitData[0]);
-    object fromJson = JsonConvert.DeserializeObject(splitData[1], target);
+    (Type target, object data) parsed = parser.Deserialize(message);
 
-    UpdateCharacterPositionMessage updateMessage = moveService.Execute((MoveCharacterMessage)fromJson);
-    client.Send(JsonConvert.SerializeObject(updateMessage));
+    if (parsed.target == typeof(MoveMessage))
+    {
+        UpdatePositionMessage updateMessage = moveService.Execute(client.ConnectionInfo.Id, (MoveMessage)parsed.data);
+        client.Send(parser.Serialize(updateMessage));
+    }
 
     Console.WriteLine($"Client {client.ConnectionInfo.Id} sent message: {message}");
 }

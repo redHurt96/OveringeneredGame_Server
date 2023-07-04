@@ -1,7 +1,4 @@
-﻿using System.Data;
-using System.Numerics;
-
-namespace Server
+﻿namespace Server
 {
     internal class MoveService
     {
@@ -10,19 +7,15 @@ namespace Server
         internal MoveService(ClientsRepository repository) => 
             _repository = repository;
 
-        internal UpdateCharacterPositionMessage Execute(MoveCharacterMessage moveCharacterMessage)
+        internal UpdatePositionMessage Execute(Guid id, MoveMessage moveCharacterMessage)
         {
-            ClientData client = _repository.Get(moveCharacterMessage.Id);
-            DateTime now = DateTime.Now;
-            Vector3 delta = new Vector3(moveCharacterMessage.X, moveCharacterMessage.Y, moveCharacterMessage.Z);
-            client.Position += delta * client.Speed * .033f;
+            ClientData client = _repository.Get(id);
+            client.Position += moveCharacterMessage.Direction * client.Speed * .033f;
 
-            return new UpdateCharacterPositionMessage()
+            return new UpdatePositionMessage()
             {
-                Id = moveCharacterMessage.Id,
-                X = client.Position.X,
-                Y = client.Position.Y,
-                Z = client.Position.Z,
+                Tick = moveCharacterMessage.Tick,
+                Position = client.Position,
             };
         }
     }

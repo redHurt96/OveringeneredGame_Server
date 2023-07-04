@@ -4,8 +4,8 @@
     {
         private readonly Dictionary<Guid, ClientData> _clients = new();
 
-        internal void Add(Guid id, DateTime now) => 
-            _clients.Add(id, new ClientData(id, now));
+        internal void Add(Guid id) => 
+            _clients.Add(id, new ClientData(id));
 
         internal ClientData Get(Guid id) =>
             _clients[id];
