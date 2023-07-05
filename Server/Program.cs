@@ -12,6 +12,7 @@ MessagesParser parser = new();
 ClientsRepository repository = new();
 CreateCharacterService createCharacterService = new(repository, parser);
 MoveService moveService = new(repository, parser);
+RemoveCharacterService removeCharacterService = new(repository, parser);
 
 server.Start(client =>
 {
@@ -29,7 +30,7 @@ void HandleOpen(IWebSocketConnection connection)
 void HandleClose(IWebSocketConnection client)
 {
     Console.WriteLine($"Client {client.ConnectionInfo.Id} disconnected");
-    repository.Remove(client.ConnectionInfo.Id);
+    removeCharacterService.Execute(client);
 }
 
 void HandleMessage(IWebSocketConnection connection, string message)
