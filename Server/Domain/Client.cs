@@ -1,7 +1,7 @@
 ﻿using Fleck;
 using System.Numerics;
 
-namespace Server
+namespace Server.Domain
 {
     internal class Client
     {
@@ -20,7 +20,7 @@ namespace Server
             _connection = connection;
         }
 
-        internal void Send(string message) => 
+        internal void Send(string message) =>
             _connection.Send(message);
     }
 }
