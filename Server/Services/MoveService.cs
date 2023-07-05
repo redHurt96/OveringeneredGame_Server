@@ -24,6 +24,7 @@ namespace Server.Services
             {
                 CharacterId = characterId,
                 Position = targetClient.Position,
+                LookDirection = moveCharacterMessage.Direction,
             };
 
             string parsedMessage = _parser.Serialize(message);

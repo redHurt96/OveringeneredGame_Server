@@ -27,6 +27,7 @@ public struct UpdatePositionMessage
 {
     public string CharacterId;
     public Vector3 Position;
+    public Vector3 LookDirection;
 }
 
 [Serializable]
