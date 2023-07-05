@@ -1,16 +1,26 @@
-﻿using System.Numerics;
+﻿using Fleck;
+using System.Numerics;
 
 namespace Server
 {
-    internal class ClientData
+    internal class Client
     {
-        public Guid Id { get; set; }
         public Vector3 Position { get; set; }
         public float Speed { get; internal set; } = 3f;
 
-        public ClientData(Guid id)
+        public readonly Guid Id;
+        public readonly string CharacterId;
+
+        private readonly IWebSocketConnection _connection;
+
+        public Client(IWebSocketConnection connection, string characterId)
         {
-            Id = id;
+            Id = connection.ConnectionInfo.Id;
+            CharacterId = characterId;
+            _connection = connection;
         }
+
+        internal void Send(string message) => 
+            _connection.Send(message);
     }
 }

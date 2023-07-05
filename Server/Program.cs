@@ -1,14 +1,17 @@
 ﻿using _Project;
 using Fleck;
 using Server;
+using Server.Services;
+using System.Data;
 using System.Numerics;
 
 Console.WriteLine("Hello, World!");
 
 WebSocketServer server = new("ws://0.0.0.0:5000");
-ClientsRepository repository = new();
-MoveService moveService = new(repository);
 MessagesParser parser = new();
+ClientsRepository repository = new();
+CreateCharacterService createCharacterService = new(repository, parser);
+MoveService moveService = new(repository, parser);
 
 server.Start(client =>
 {
@@ -17,18 +20,10 @@ server.Start(client =>
     client.OnMessage = message => HandleMessage(client, message);
 });
 
-void HandleOpen(IWebSocketConnection client)
+void HandleOpen(IWebSocketConnection connection)
 {
-    Console.WriteLine($"Client {client.ConnectionInfo.Id} connected");
-
-    repository.Add(client.ConnectionInfo.Id);
-
-    CreateCharacterMessage message = new()
-    {
-        Position = Vector3.Zero,
-    };
-
-    client.Send(parser.Serialize(message));
+    Console.WriteLine($"Client {connection.ConnectionInfo.Id} connected");
+    createCharacterService.Execute(connection);
 }
 
 void HandleClose(IWebSocketConnection client)
@@ -37,17 +32,14 @@ void HandleClose(IWebSocketConnection client)
     repository.Remove(client.ConnectionInfo.Id);
 }
 
-void HandleMessage(IWebSocketConnection client, string message)
+void HandleMessage(IWebSocketConnection connection, string message)
 {
     (Type target, object data) parsed = parser.Deserialize(message);
 
     if (parsed.target == typeof(MoveMessage))
-    {
-        UpdatePositionMessage updateMessage = moveService.Execute(client.ConnectionInfo.Id, (MoveMessage)parsed.data);
-        client.Send(parser.Serialize(updateMessage));
-    }
+        moveService.Execute((MoveMessage)parsed.data);
 
-    Console.WriteLine($"Client {client.ConnectionInfo.Id} sent message: {message}");
+    Console.WriteLine($"Client {connection.ConnectionInfo.Id} sent message: {message}");
 }
 
 Console.ReadLine();
