@@ -1,16 +1,19 @@
 ﻿using _Project;
 using Fleck;
 using Server;
+using Server.Domain;
 using Server.Services;
+using System.Numerics;
 
 Console.WriteLine("Server for OverEngineered Game is runned!");
 
 WebSocketServer server = new("ws://0.0.0.0:5000");
 MessagesParser parser = new();
+World world = new(new Vector3(0, -1.5f, 0), new Vector3(30, 1, 30));
 ClientsRepository repository = new();
-CreateWorldService createWorldService = new(parser);
+CreateWorldService createWorldService = new(world, parser);
 CreateCharacterService createCharacterService = new(repository, parser);
-MoveService moveService = new(repository, parser);
+MoveService moveService = new(world, repository, parser);
 StopMovementService stopMovementService = new(repository, parser);
 RemoveCharacterService removeCharacterService = new(repository, parser);
 

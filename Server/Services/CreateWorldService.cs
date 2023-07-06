@@ -9,9 +9,9 @@ namespace Server.Services
         private readonly World _world;
         private readonly MessagesParser _parser;
 
-        internal CreateWorldService(MessagesParser parser)
+        internal CreateWorldService(World world, MessagesParser parser)
         {
-            _world = new(new Vector3(0, -1.5f, 0), new Vector3(30, 1, 30));
+            _world = world;
             _parser = parser;
         }
 
