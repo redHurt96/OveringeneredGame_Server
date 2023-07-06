@@ -14,10 +14,10 @@ namespace Server.Services
             _parser = parser;
         }
 
-        internal void Execute(MoveMessage moveCharacterMessage)
+        internal void Execute(Guid clientId, MoveMessage moveCharacterMessage)
         {
-            string characterId = moveCharacterMessage.CharacterId;
-            Client targetClient = _repository.GetByCharacterId(characterId);
+            Client targetClient = _repository.GetById(clientId);
+            string characterId = targetClient.CharacterId;
             targetClient.Position += moveCharacterMessage.Direction * targetClient.Speed * .033f;
 
             UpdatePositionMessage message = new()

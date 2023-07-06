@@ -11,6 +11,7 @@ ClientsRepository repository = new();
 CreateWorldService createWorldService = new(parser);
 CreateCharacterService createCharacterService = new(repository, parser);
 MoveService moveService = new(repository, parser);
+StopMovementService stopMovementService = new(repository, parser);
 RemoveCharacterService removeCharacterService = new(repository, parser);
 
 server.Start(client =>
@@ -41,7 +42,9 @@ void HandleMessage(IWebSocketConnection connection, string message)
     (Type target, object data) parsed = parser.Deserialize(message);
 
     if (parsed.target == typeof(MoveMessage))
-        moveService.Execute((MoveMessage)parsed.data);
+        moveService.Execute(connection.ConnectionInfo.Id, (MoveMessage)parsed.data);
+    else if (parsed.target == typeof(StopMovementMessage))
+        stopMovementService.Execute(connection.ConnectionInfo.Id);
 }
 
 Console.ReadLine();

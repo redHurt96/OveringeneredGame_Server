@@ -18,8 +18,19 @@ public struct RemoveCharacterMessage
 [Serializable]
 public struct MoveMessage
 {
-    public string CharacterId;
     public Vector3 Direction;
+}
+
+[Serializable]
+public struct StopMovementMessage
+{
+
+}
+
+[Serializable]
+public struct StopCharacterMessage
+{
+    public string CharacterId;
 }
 
 [Serializable]
